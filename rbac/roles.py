@@ -1,0 +1,5 @@
+ROLES = {
+    "student": "student",
+    "teacher": "teacher",
+    "admin": "admin"
+}
