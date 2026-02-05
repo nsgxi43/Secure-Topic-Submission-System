@@ -3,38 +3,37 @@ from database.db import get_db
 from crypto.hashing import hash_with_salt
 from crypto.key_management import generate_keys
 from crypto.encoding import encode_data
-
 from cryptography.hazmat.primitives import serialization
-
 
 def register_user():
     data = request.json
-
     username = data.get("username")
     password = data.get("password")
     role = data.get("role")
-
+    
     if not username or not password or not role:
         return jsonify({"error": "Missing fields"}), 400
-
+    
     password_hash, salt = hash_with_salt(password)
-
     private_key, public_key = generate_keys()
-
+    
     priv_bytes = private_key.private_bytes(
         encoding=serialization.Encoding.PEM,
         format=serialization.PrivateFormat.PKCS8,
         encryption_algorithm=serialization.NoEncryption()
     )
-
     pub_bytes = public_key.public_bytes(
         encoding=serialization.Encoding.PEM,
         format=serialization.PublicFormat.SubjectPublicKeyInfo
     )
-
+    
     conn = get_db()
-
     try:
+        # Check if user already exists
+        existing = conn.execute("SELECT username FROM users WHERE username = ?", (username,)).fetchone()
+        if existing:
+            return jsonify({"error": "Username already exists"}), 400
+            
         conn.execute(
             """
             INSERT INTO users
@@ -51,10 +50,9 @@ def register_user():
             )
         )
         conn.commit()
-
     except Exception as e:
         import traceback
         traceback.print_exc()
         return jsonify({"error": f"Registration failed: {str(e)}"}), 400
-
+    
     return jsonify({"message": "User registered successfully"})

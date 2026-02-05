@@ -7,12 +7,12 @@ import time
 from database.db import get_db
 from crypto.hashing import hash_with_salt
 
-# Configuration
+
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
-SENDER_EMAIL = "email"
-# Using an env var is safer, assuming user will export it
-GMAIL_APP_PASSWORD = os.getenv("MAIL_PASSWORD") or "password" 
+SENDER_EMAIL = "nsgxi43@gmail.com"
+
+GMAIL_APP_PASSWORD = os.getenv("MAIL_PASSWORD") or "tguj ppgw fnlq pfnu" 
 
 def send_otp_email(to_email, otp_code):
     if not GMAIL_APP_PASSWORD:

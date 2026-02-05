@@ -9,7 +9,12 @@ def generate_otp():
 
 def verify_otp(user_input):
     stored = session.get("otp")
-    print(f"DEBUG: Stored OTP: {stored} (type: {type(stored)}), Input: {user_input} (type: {type(user_input)})")
+    # Strip whitespace to handle extra spaces
+    user_input_clean = str(user_input).strip()
+    stored_clean = str(stored).strip() if stored else ""
+    
+    print(f"DEBUG: Stored OTP: '{stored_clean}', Input: '{user_input_clean}'")
+    
     if not stored:
         return False
-    return str(stored) == str(user_input)
+    return stored_clean == user_input_clean
